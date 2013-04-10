@@ -74,7 +74,7 @@ func auth(login, pass string) {
 	ret.Body.Close()
 }
 
-func json_cal() {
+func json_cal() int {
 	url := "https://intra.epitech.eu/planning/load?format=json&start=2013-04-08&end=2014-04-14"
 	ret, _ := client.Get(url)
 	b, _ := ioutil.ReadAll(ret.Body)
@@ -83,7 +83,9 @@ func json_cal() {
 	b = re.ReplaceAll(b, nil)
 	if err := json.Unmarshal(b, &Events); err != nil {
 		log.Print(err)
+		return 0
 	}
+	return 1
 }
 
 func date_ical(json_date string) string {
@@ -93,7 +95,9 @@ func date_ical(json_date string) string {
 }
 
 func generate_ical() string {
-	json_cal()
+	if err := json_cal(); err == 0 {
+		return ""
+	}
 	ical := "BEGIN:VCALENDAR\nPRODID:-//Google Inc//Google Calendar 70.9054//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:Epitech\nX-WR-CALDESC:"
 	for _, val := range Events {
 		if val.Event_registered == "registered" {
