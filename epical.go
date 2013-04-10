@@ -16,6 +16,7 @@ var (
 	cookies = new(Jar)
 	client  = http.Client{nil, nil, cookies}
 	Events  []Event
+	port    string
 )
 
 type Event struct {
@@ -126,10 +127,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func http_server() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":9192", nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 func main() {
+	port = os.Args[3]
 	auth(os.Args[1], os.Args[2])
 	json_cal()
 	http_server()
