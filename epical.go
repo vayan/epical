@@ -69,7 +69,7 @@ func (jar *Jar) Cookies(u *url.URL) []*http.Cookie {
 func auth(login, pass string) {
 	ret, err := client.PostForm("https://intra.epitech.eu", url.Values{"login": {login}, "password": {pass}, "remind": {"on"}})
 	if ret.StatusCode == 403 || err != nil {
-		log.Fatal(ret.StatusCode, " wrong login or password")
+		log.Print(ret.StatusCode, " wrong login or password")
 	}
 	ret.Body.Close()
 }
@@ -82,7 +82,7 @@ func json_cal() {
 	re := regexp.MustCompile("(?s)//.*?\n|/\\*.*?\\*/") //remove comments in json
 	b = re.ReplaceAll(b, nil)
 	if err := json.Unmarshal(b, &Events); err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 }
 
@@ -108,7 +108,9 @@ func generate_ical() string {
 			ical += "\nCREATED:" + startical
 			ical += "\nDESCRIPTION:" + val.Type_title
 			ical += "\nLAST-MODIFIED:" + now
-			ical += "\nLOCATION: " + val.Room["code"].(string)
+			if value, ok := val.Room["code"]; ok {
+				ical += "\nLOCATION: " + value.(string)
+			}
 			ical += "\nSEQUENCE:0"
 			ical += "\nSTATUS:CONFIRMED"
 			ical += "\nSUMMARY:" + val.Acti_title
@@ -133,6 +135,5 @@ func http_server() {
 func main() {
 	port = os.Args[3]
 	auth(os.Args[1], os.Args[2])
-	json_cal()
 	http_server()
 }
