@@ -92,6 +92,7 @@ func date_ical(json_date string) string {
 }
 
 func generate_ical() string {
+	json_cal()
 	ical := "BEGIN:VCALENDAR\nPRODID:-//Google Inc//Google Calendar 70.9054//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:Epitech\nX-WR-CALDESC:"
 	for _, val := range Events {
 		if val.Event_registered == "registered" {
@@ -125,7 +126,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func http_server() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":9191", nil)
+	http.ListenAndServe(":9192", nil)
 }
 
 func main() {
